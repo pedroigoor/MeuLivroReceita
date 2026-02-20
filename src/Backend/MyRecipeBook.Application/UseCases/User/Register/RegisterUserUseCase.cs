@@ -41,7 +41,7 @@ namespace MyRecipeBook.Application.UseCases.User.Register
 
            await _userWriteOnlyRepository.Add(user);
            await _unitOfWork.Commit();
-            return null;
+            return  new ResponseRegisteredUserJson { Name = user.Name };
         }
 
 

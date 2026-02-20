@@ -12,8 +12,11 @@ namespace MyRecipeBook.Application.UseCases.User.Register
         public RegisterUserValidador() { 
             RuleFor(RuleFor => RuleFor.Name).NotEmpty().WithMessage(ResourceMenssagesException.NAME_EMPTY);
             RuleFor(RuleFor => RuleFor.Email).NotEmpty().WithMessage(ResourceMenssagesException.EMAIL_EMPTY);
-            RuleFor(RuleFor => RuleFor.Email).EmailAddress().WithMessage(ResourceMenssagesException.EMAIL_INVALID);
             RuleFor(RuleFor => RuleFor.Password.Length).GreaterThanOrEqualTo(6).WithMessage(ResourceMenssagesException.PASSWORD_EMPTY);
+            When(RuleFor => !string.IsNullOrEmpty(RuleFor.Email), () =>
+            {
+                RuleFor(RuleFor => RuleFor.Email).EmailAddress().WithMessage(ResourceMenssagesException.EMAIL_INVALID);
+            });
 
 
         }
