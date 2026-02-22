@@ -1,21 +1,16 @@
-﻿using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MyRecipeBook.Communication.Resopnses
+﻿namespace MyRecipeBook.Communication.Resopnses
 {
     public class ResponseErrorJson
     {
-        public IList<string> Erros {  get; }
+        public IList<string> Errors {  get; }
       
-        public ResponseErrorJson(IList<string> erros) {
-            Erros = erros; ;
+        public ResponseErrorJson(IList<string> errors) {
+            Errors = errors; ;
         }
 
-        public ResponseErrorJson(string erros)
+        public ResponseErrorJson(string errors)
         {
-            Erros = [erros];
+            Errors = [errors];
         }
     }
 }
