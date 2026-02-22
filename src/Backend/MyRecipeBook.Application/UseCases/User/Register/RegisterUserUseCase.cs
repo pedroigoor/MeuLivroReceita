@@ -6,7 +6,6 @@ using MyRecipeBook.Domain.Repositories;
 using MyRecipeBook.Domain.Repositories.User;
 using MyRecipeBook.Excpitons;
 using MyRecipeBook.Excpitons.ExceptionsBase;
-using System.Threading.Tasks;
 
 namespace MyRecipeBook.Application.UseCases.User.Register
 {
@@ -37,7 +36,7 @@ namespace MyRecipeBook.Application.UseCases.User.Register
 
            var user = _mapper.Map<Domain.Entities.User>(request);
 
-           user.Password = _passwordEncripter.Encrypt(request.Password);
+           user.Password = PasswordEncripter.Encrypt(request.Password);
 
            await _userWriteOnlyRepository.Add(user);
            await _unitOfWork.Commit();
