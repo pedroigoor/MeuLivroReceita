@@ -1,0 +1,51 @@
+name: .NET CI with SonarCloud
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  build:
+    name: Build and Analyze
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Install SonarCloud scanner
+        run: dotnet tool install --global dotnet-sonarscanner
+
+      - name: Begin SonarCloud Analysis
+        run: |
+          dotnet sonarscanner begin \
+            /k:"pedroigoor_MeuLivroReceita" \
+            /o:"pedroigoor" \
+            /d:sonar.token="${{ secrets.SONARCLOUD }}" \
+            /d:sonar.host.url="https://sonarcloud.io"
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore
+
+      - name: Test
+        run: dotnet test --no-build --collect:"XPlat Code Coverage"
+
+      - name: End SonarCloud Analysis
+        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONARCLOUD }}"
