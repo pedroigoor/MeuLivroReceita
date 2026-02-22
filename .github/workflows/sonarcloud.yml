@@ -50,3 +50,5 @@ jobs:
 
       - name: End SonarCloud Analysis
         run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONARCLOUD }}"
+      - name: List coverage files
+        run: dir /s coverage.opencover.xml
