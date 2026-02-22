@@ -64,14 +64,13 @@ namespace UseCases.User.Register
         {
 
             var mapper = MapperBuilder.Build();
-            var passwordEncripter = PasswordEncripterBuilder.Build();
             var writeRepository = UserWriteOnlyRepositoryBuilder.Build();
             var unitOfWork = UnitOfWorkBuilder.Build();
             var readRepositoryBuilder = new UserReadOnlyRepositoryBuilder();
             if (string.IsNullOrEmpty(email) == false)
                 readRepositoryBuilder.ExistActiveUserWithEmail(email);
 
-            return new RegisterUserUseCase(writeRepository, readRepositoryBuilder.Build(), mapper, passwordEncripter, unitOfWork);
+            return new RegisterUserUseCase(writeRepository, readRepositoryBuilder.Build(), mapper,  unitOfWork);
 
         }
     }

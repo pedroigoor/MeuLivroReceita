@@ -15,18 +15,15 @@ namespace MyRecipeBook.Application.UseCases.User.Register
         private readonly IUserReadOnlyRepository _userReadOnlyRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly PasswordEncripter _passwordEncripter;
 
         public RegisterUserUseCase(IUserWriteOnlyRepository userWriteOnlyRepository, 
                                    IUserReadOnlyRepository userReadOnlyRepository,
                                    IMapper mapper,
-                                   PasswordEncripter passwordEncripter,
                                    IUnitOfWork unitOfWork)
         {
             _userWriteOnlyRepository = userWriteOnlyRepository;
             _userReadOnlyRepository = userReadOnlyRepository;
             _mapper = mapper;
-            _passwordEncripter = passwordEncripter;
             _unitOfWork = unitOfWork;
         }
         public async Task<ResponseRegisteredUserJson> Execute(RequestRegisterUserJson request)
