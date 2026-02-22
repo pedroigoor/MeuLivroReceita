@@ -60,7 +60,7 @@ namespace UseCases.User.Register
                 .ShouldContain(ResourceMenssagesException.NAME_EMPTY);
         }
 
-        private RegisterUserUseCase CreateUseCase(string? email =null )
+        private static RegisterUserUseCase CreateUseCase(string? email =null )
         {
 
             var mapper = MapperBuilder.Build();
