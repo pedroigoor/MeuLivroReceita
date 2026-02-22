@@ -12,7 +12,7 @@ namespace MyRecipeBook.API.Middleware
 
         public async Task Invoke(HttpContext context)
         {
-            var supportedCultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
+            var supportedCultures = CultureInfo.GetCultures(CultureTypes.AllCultures).ToList();
 
             var cultureQuery = context.Request.Headers.AcceptLanguage.FirstOrDefault();
 
@@ -20,7 +20,7 @@ namespace MyRecipeBook.API.Middleware
 
 
             if (!string.IsNullOrWhiteSpace(cultureQuery)  && 
-                supportedCultures.Any(c => c.Name.Equals(cultureQuery)))
+                supportedCultures.Exists(c => c.Name.Equals(cultureQuery)))
             {
                 culture = new CultureInfo(cultureQuery);
               

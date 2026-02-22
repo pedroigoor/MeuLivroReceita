@@ -21,18 +21,18 @@ namespace MyRecipeBook.API.Filters
             }
         }
 
-        public void HandleProjectException(ExceptionContext contex)
+        public static void HandleProjectException(ExceptionContext contex)
         {
             if(contex.Exception is ErrorOnValidationException)
             {
                 var excepiton = contex.Exception as ErrorOnValidationException;
 
                 contex.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                contex.Result = new BadRequestObjectResult( new ResponseErrorJson(excepiton.Errors));
+                contex.Result = new BadRequestObjectResult( new ResponseErrorJson(excepiton!.Errors));
             }
         }
 
-        public void ThrowUnknowException(ExceptionContext contex)
+        public static void ThrowUnknowException(ExceptionContext contex)
         {
             contex.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             contex.Result = new ObjectResult(new ResponseErrorJson(ResourceMenssagesException.UNKNOW_ERROR));

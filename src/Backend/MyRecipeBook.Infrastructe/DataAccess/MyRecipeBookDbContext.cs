@@ -12,10 +12,10 @@ namespace MyRecipeBook.Infrastructe.DataAccess
         {
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            builder.ApplyConfigurationsFromAssembly(typeof(MyRecipeBookDbContext).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(MyRecipeBookDbContext).Assembly);
         }
     }
 }

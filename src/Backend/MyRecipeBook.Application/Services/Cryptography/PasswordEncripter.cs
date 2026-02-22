@@ -6,7 +6,7 @@ namespace MyRecipeBook.Application.Services.Cryptography
 {
     public class PasswordEncripter
     {
-        public string Encrypt(string password)
+        public static string Encrypt(string password)
         {
             // Implementação de criptografia de senha (exemplo usando SHA256)
             using (var sha256 = System.Security.Cryptography.SHA256.Create())
