@@ -31,16 +31,26 @@ jobs:
         run: dotnet tool install --global dotnet-sonarscanner
 
       - name: Begin SonarCloud Analysis
-        run: dotnet sonarscanner begin /key:"pedroigoor_MeuLivroReceita" /o:"pedroigoor" /d:sonar.token="${{ secrets.SONARCLOUD }}" /d:sonar.host.url="https://sonarcloud.io"
+        run: >
+          dotnet sonarscanner begin
+          /key:"pedroigoor_MeuLivroReceita"
+          /o:"pedroigoor"
+          /d:sonar.token="${{ secrets.SONARCLOUD }}"
+          /d:sonar.host.url="https://sonarcloud.io"
+          /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
 
       - name: Restore
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --no-restore
+        run: dotnet build --no-restore --configuration Release
 
-      - name: Test
-        run: dotnet test --no-build --collect:"XPlat Code Coverage"
+      - name: Test with Coverage
+        run: >
+          dotnet test --no-build --configuration Release
+          /p:CollectCoverage=true
+          /p:CoverletOutputFormat=opencover
+          /p:CoverletOutput=./coverage/
 
       - name: End SonarCloud Analysis
         run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONARCLOUD }}"
