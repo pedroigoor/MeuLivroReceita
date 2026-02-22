@@ -16,18 +16,15 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
 
-      - name: Install SonarScanner
-        run: dotnet tool install --global dotnet-sonarscanner
+      - run: dotnet tool install --global dotnet-sonarscanner
 
       - name: Begin Sonar
         run: >
@@ -36,24 +33,19 @@ jobs:
           /o:"pedroigoor"
           /d:sonar.token="${{ secrets.SONARCLOUD }}"
           /d:sonar.host.url="https://sonarcloud.io"
-          /d:sonar.cs.cobertura.reportsPaths="TestResults/**/coverage.cobertura.xml"
+          /d:sonar.cs.cobertura.reportsPaths="TestResults/coverage/coverage.cobertura.xml"
 
-      - name: Restore
-        run: dotnet restore
+      - run: dotnet restore
 
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
+      - run: dotnet build --configuration Release --no-restore
 
       - name: Test with Coverage
         run: >
           dotnet test
           --configuration Release
-          --collect:"XPlat Code Coverage"
-          --results-directory TestResults
-
-      # Step de diagnóstico (pode remover depois que funcionar)
-      - name: List Coverage Files
-        run: Get-ChildItem -Path . -Recurse -Filter coverage.cobertura.xml
+          /p:CollectCoverage=true
+          /p:CoverletOutputFormat=cobertura
+          /p:CoverletOutput=./TestResults/coverage/
 
       - name: End Sonar
         run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONARCLOUD }}"
