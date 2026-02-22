@@ -31,12 +31,13 @@ jobs:
         run: dotnet tool install --global dotnet-sonarscanner
 
       - name: Begin SonarCloud Analysis
-        run: |
-          dotnet sonarscanner begin \
-            /k:"pedroigoor_MeuLivroReceita" \
-            /o:"pedroigoor" \
-            /d:sonar.token="${{ secrets.SONARCLOUD }}" \
-            /d:sonar.host.url="https://sonarcloud.io"
+      shell: bash
+      run: |
+        dotnet sonarscanner begin \
+          /k:"pedroigoor_MeuLivroReceita" \
+          /o:"pedroigoor" \
+          /d:sonar.token="${{ secrets.SONARCLOUD }}" \
+          /d:sonar.host.url="https://sonarcloud.io"
 
       - name: Restore
         run: dotnet restore
