@@ -33,7 +33,7 @@ jobs:
           /o:"pedroigoor"
           /d:sonar.token="${{ secrets.SONARCLOUD }}"
           /d:sonar.host.url="https://sonarcloud.io"
-          /d:sonar.cs.cobertura.reportsPaths="TestResults/**/coverage.cobertura.xml"
+          /d:sonar.cs.cobertura.reportsPaths="**/coverage.cobertura.xml"
 
       - run: dotnet restore
 
