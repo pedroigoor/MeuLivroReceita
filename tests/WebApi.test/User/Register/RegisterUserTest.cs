@@ -12,21 +12,21 @@ using Xunit.Sdk;
 
 namespace WebApi.test.User.Register
 {
-    public class RegisterUserTest : IClassFixture<CustomWebApplicationFacotory>
+    public class RegisterUserTest : MyRecipeBookClassFixture
     {
-        private readonly HttpClient _httpClient;
-        public RegisterUserTest(CustomWebApplicationFacotory factory) => _httpClient = factory.CreateClient();
+        private readonly string method = "user";
+        public RegisterUserTest(CustomWebApplicationFactory factory) : base(factory) { }
 
         [Fact]
         public async Task Success()
         {
             var request = RequestRegisterUserJsonBuilder.Build();
-            var response = await _httpClient.PostAsJsonAsync("User", request);
+            var response = await DoPost(method, request);
 
             response.StatusCode.ShouldBe<HttpStatusCode>(HttpStatusCode.Created);
 
-            await using var responseBody = await response.Content.ReadAsStreamAsync();
-            var responseData = await JsonDocument.ParseAsync(responseBody);
+            await using var responseBody = await response.Content.ReadAsStreamAsync(TestContext.Current.CancellationToken);
+            var responseData = await JsonDocument.ParseAsync(responseBody, cancellationToken: TestContext.Current.CancellationToken);
 
             responseData.RootElement.GetProperty("name").GetString().ShouldNotBeNullOrWhiteSpace();
 
@@ -39,18 +39,15 @@ namespace WebApi.test.User.Register
         [ClassData(typeof(CultureInlineDataTest))]
         public async Task Error_Empty_Name(string culture)
         {
-             var request = RequestRegisterUserJsonBuilder.Build();
-             request.Name = string.Empty;
-            if (_httpClient.DefaultRequestHeaders.Contains("Accept-Language"))
-                _httpClient.DefaultRequestHeaders.Remove("Accept-Language");
-
-            _httpClient.DefaultRequestHeaders.Add("Accept-Language", culture);
-            var response = await _httpClient.PostAsJsonAsync("User", request);
+            var request = RequestRegisterUserJsonBuilder.Build();
+            request.Name = string.Empty;
+       
+            var response = await DoPost(method, request, culture);
 
             response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
 
-            await using var responseBody = await response.Content.ReadAsStreamAsync();
-            var responseData = await JsonDocument.ParseAsync(responseBody);
+            await using var responseBody = await response.Content.ReadAsStreamAsync(TestContext.Current.CancellationToken);
+            var responseData = await JsonDocument.ParseAsync(responseBody, cancellationToken: TestContext.Current.CancellationToken);
 
             var errors = responseData
                 .RootElement

@@ -1,4 +1,5 @@
 using MyRecipeBook.API.Config;
+using MyRecipeBook.API.Converters;
 using MyRecipeBook.Application;
 using MyRecipeBook.Infrastructe;
 using MyRecipeBook.Infrastructe.Extensions;
@@ -18,11 +19,13 @@ builder.Services.AddApi();
 
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.Converters.Add(new StringConverter()));
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 var app = builder.Build();
 

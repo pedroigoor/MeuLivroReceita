@@ -28,7 +28,13 @@ namespace MyRecipeBook.API.Filters
                 var excepiton = contex.Exception as ErrorOnValidationException;
 
                 contex.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                contex.Result = new BadRequestObjectResult( new ResponseErrorJson(excepiton!.Errors));
+                contex.Result = new BadRequestObjectResult ( new ResponseErrorJson(excepiton!.Errors));
+            }
+            else if (contex.Exception is InvalidLoginException)
+            { 
+
+                contex.HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                contex.Result = new UnauthorizedObjectResult(new ResponseErrorJson(contex.Exception.Message));
             }
         }
 

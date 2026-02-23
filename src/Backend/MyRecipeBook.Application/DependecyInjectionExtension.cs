@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Application.Services.Cryptography;
+using MyRecipeBook.Application.UseCases.Login.DoLogin;
 using MyRecipeBook.Application.UseCases.User.Register;
 
 namespace MyRecipeBook.Application
@@ -23,8 +24,9 @@ namespace MyRecipeBook.Application
         }
         private static void AddUseCases(this IServiceCollection services)
         {
-            services.AddScoped<IRegisterUserUseCase,RegisterUserUseCase>();
-        }
+            services.AddScoped<IRegisterUserUseCase,RegisterUserUseCase>();         
+            services.AddScoped<IDoLoginUseCase, DoLoginUseCase>();
+         }
 
         private static void AddPasswordEncrypt(this IServiceCollection services)
         {
