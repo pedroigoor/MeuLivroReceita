@@ -59,13 +59,13 @@ namespace WebApi.test.Login.DoLogin
             name.ShouldNotBeNullOrWhiteSpace();
             name.ShouldBe(_name);
 
-            //var accessToken = responseData
-            //    .RootElement
-            //    .GetProperty("tokens")
-            //    .GetProperty("accessToken")
-            //    .GetString();
+            var accessToken = responseData
+                .RootElement
+                .GetProperty("tokens")
+                .GetProperty("accessToken")
+                .GetString();
 
-            //accessToken.ShouldNotBeNullOrWhiteSpace();
+            accessToken.ShouldNotBeNullOrWhiteSpace();
         }
 
         [Theory]

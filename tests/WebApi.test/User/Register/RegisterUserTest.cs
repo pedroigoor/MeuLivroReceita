@@ -32,6 +32,14 @@ namespace WebApi.test.User.Register
 
             responseData.RootElement.GetProperty("name").GetString().ShouldBe(request.Name);
 
+            var accessToken = responseData
+          .RootElement
+          .GetProperty("tokens")
+          .GetProperty("accessToken")
+          .GetString();
+
+            accessToken.ShouldNotBeNullOrWhiteSpace();
+
 
         }
 

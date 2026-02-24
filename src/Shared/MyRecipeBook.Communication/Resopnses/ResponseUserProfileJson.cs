@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MyRecipeBook.Domain.Entities
+namespace MyRecipeBook.Communication.Resopnses
 {
-    public class User : EntityBase
+    public class ResponseUserProfileJson
     {
-      
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public Guid UserIdentifier { get; set; }
-
     }
 }

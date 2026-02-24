@@ -1,6 +1,7 @@
 ﻿using CommonTestUtilities.Entities;
 using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Requests;
+using CommonTestUtilities.Tokens;
 using MyRecipeBook.Application.UseCases.Login.DoLogin;
 using MyRecipeBook.Communication.Request;
 using MyRecipeBook.Domain.Entities;
@@ -23,7 +24,9 @@ namespace UseCases.Test.Login.DoLogin
                                                  PassWord = pass });
 
             result.ShouldNotBeNull();
+            result.Tokens.ShouldNotBeNull();
             result.Name.ShouldNotBeNullOrWhiteSpace(user.Name);
+            result.Tokens.AccessToken.ShouldNotBeNullOrEmpty();
 
 
         }
@@ -48,13 +51,14 @@ namespace UseCases.Test.Login.DoLogin
         private static DoLoginUseCase CreateUseCase(MyRecipeBook.Domain.Entities.User? user  = null) {
 
             var readRepositoryBuilder = new UserReadOnlyRepositoryBuilder();
+            var accessToken =  JwtTokenGenaratorBuilder.Build();
 
-            if(user is not null)
+            if (user is not null)
             {
                 readRepositoryBuilder.GetByEmailAndPass(user);
             }
 
-            return new DoLoginUseCase(readRepositoryBuilder.Build());
+            return new DoLoginUseCase(readRepositoryBuilder.Build(), accessToken);
 
         }
     }

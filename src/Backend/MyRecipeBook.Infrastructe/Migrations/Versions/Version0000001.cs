@@ -7,10 +7,11 @@ namespace MyRecipeBook.Infrastructe.Migrations.Versions
     {
         public override void Up()
         {
-            CreateTable("Users") 
+            CreateTable("Users")
                 .WithColumn("Name").AsString(255).NotNullable()
                 .WithColumn("Email").AsString(255).NotNullable().Unique()
-                .WithColumn("Password").AsString(255).NotNullable();
+                .WithColumn("Password").AsString(255).NotNullable()
+                .WithColumn("UserIdentifier").AsGuid().NotNullable();
         }
     }
 }

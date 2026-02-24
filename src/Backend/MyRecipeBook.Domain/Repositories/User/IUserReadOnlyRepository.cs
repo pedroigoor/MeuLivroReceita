@@ -7,5 +7,7 @@ namespace MyRecipeBook.Domain.Repositories.User
         public Task<bool> ExistActiveUserWithEmail(string email);
 
         public Task<Entities.User?> GetByEmailAndPass(string email,string passWord);
+
+        public Task<bool> ExistActiveUserWithIdentifier(Guid userIdentifier);
     }
 }

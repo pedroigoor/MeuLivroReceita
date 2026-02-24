@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using IBM.Data.Db2;
+using Microsoft.EntityFrameworkCore;
 using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Domain.Repositories.User;
 using System;
@@ -31,5 +32,7 @@ namespace MyRecipeBook.Infrastructe.DataAccess.Repositories
                                  .AsNoTracking()
                                  .FirstOrDefaultAsync(u => u.Email.Equals(email) && u.Password.Equals(passWord) && u.Active);
         }
+
+        public async Task<bool> ExistActiveUserWithIdentifier(Guid userIdentifier) => await _context.Users.AnyAsync(user => user.UserIdentifier.Equals(userIdentifier) && user.Active);
     }
 }
