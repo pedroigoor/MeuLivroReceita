@@ -8,7 +8,7 @@ using System.Text;
 
 namespace MyRecipeBook.Infrastructe.DataAccess.Repositories
 {
-    public class UserRespository : IUserWriteOnlyRepository , IUserReadOnlyRepository
+    public class UserRespository : IUserWriteOnlyRepository , IUserReadOnlyRepository, IUserUpdateOnlyRepository
     {
         private readonly MyRecipeBookDbContext _context;
         public UserRespository(MyRecipeBookDbContext context)
@@ -34,5 +34,14 @@ namespace MyRecipeBook.Infrastructe.DataAccess.Repositories
         }
 
         public async Task<bool> ExistActiveUserWithIdentifier(Guid userIdentifier) => await _context.Users.AnyAsync(user => user.UserIdentifier.Equals(userIdentifier) && user.Active);
+
+        public async Task<User> GetById(long id)
+        {
+            return await _context
+                .Users
+                .FirstAsync(user => user.Id == id);
+        }
+
+        public void Update(User user) => _context .Users.Update(user);
     }
 }

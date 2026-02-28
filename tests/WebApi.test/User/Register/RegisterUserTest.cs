@@ -23,6 +23,7 @@ namespace WebApi.test.User.Register
             var request = RequestRegisterUserJsonBuilder.Build();
             var response = await DoPost(method, request);
 
+
             response.StatusCode.ShouldBe<HttpStatusCode>(HttpStatusCode.Created);
 
             await using var responseBody = await response.Content.ReadAsStreamAsync(TestContext.Current.CancellationToken);
