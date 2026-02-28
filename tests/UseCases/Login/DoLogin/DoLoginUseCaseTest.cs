@@ -1,4 +1,5 @@
-﻿using CommonTestUtilities.Entities;
+﻿using CommonTestUtilities.Cryptography;
+using CommonTestUtilities.Entities;
 using CommonTestUtilities.Repositories;
 using CommonTestUtilities.Requests;
 using CommonTestUtilities.Tokens;
@@ -52,13 +53,14 @@ namespace UseCases.Test.Login.DoLogin
 
             var readRepositoryBuilder = new UserReadOnlyRepositoryBuilder();
             var accessToken =  JwtTokenGenaratorBuilder.Build();
+            var passwordEncripter = PasswordEncripterBuilder.Build();
 
             if (user is not null)
             {
                 readRepositoryBuilder.GetByEmailAndPass(user);
             }
 
-            return new DoLoginUseCase(readRepositoryBuilder.Build(), accessToken);
+            return new DoLoginUseCase(readRepositoryBuilder.Build(), accessToken, passwordEncripter);
 
         }
     }

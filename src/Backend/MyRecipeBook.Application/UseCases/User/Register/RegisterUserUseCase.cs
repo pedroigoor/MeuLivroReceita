@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using MyRecipeBook.Application.Services.Cryptography;
 using MyRecipeBook.Communication.Request;
 using MyRecipeBook.Communication.Resopnses;
 using MyRecipeBook.Domain.Repositories;
 using MyRecipeBook.Domain.Repositories.User;
 using MyRecipeBook.Domain.Security.Tokens;
+using MyRecipeBook.Domain.Security.Tokens.Cryptogaphy;
 using MyRecipeBook.Excpitons;
 using MyRecipeBook.Excpitons.ExceptionsBase;
 
@@ -16,19 +16,22 @@ namespace MyRecipeBook.Application.UseCases.User.Register
         private readonly IUserReadOnlyRepository _userReadOnlyRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPasswordEncripter _passwordEncripter;
         private readonly IAccessTokenGenerator _accessTokenGenerator;
 
         public RegisterUserUseCase(IUserWriteOnlyRepository userWriteOnlyRepository, 
                                    IUserReadOnlyRepository userReadOnlyRepository,
                                    IMapper mapper,
                                    IUnitOfWork unitOfWork,
-                                   IAccessTokenGenerator accessTokenGenerator)
+                                   IAccessTokenGenerator accessTokenGenerator,
+                                   IPasswordEncripter passwordEncripter)
         {
             _userWriteOnlyRepository = userWriteOnlyRepository;
             _userReadOnlyRepository = userReadOnlyRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
            _accessTokenGenerator = accessTokenGenerator;
+           _passwordEncripter = passwordEncripter;
 
         }
         public async Task<ResponseRegisteredUserJson> Execute(RequestRegisterUserJson request)
@@ -37,7 +40,7 @@ namespace MyRecipeBook.Application.UseCases.User.Register
             
 
            var user = _mapper.Map<Domain.Entities.User>(request);
-           user.Password = PasswordEncripter.Encrypt(request.Password);
+           user.Password = _passwordEncripter.Encrypt(request.Password);
            user.UserIdentifier = Guid.NewGuid();
 
            await _userWriteOnlyRepository.Add(user);

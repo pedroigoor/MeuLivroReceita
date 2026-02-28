@@ -1,10 +1,6 @@
 ﻿using Bogus;
 using CommonTestUtilities.Cryptography;
-using MyRecipeBook.Application.Services.Cryptography;
 using MyRecipeBook.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CommonTestUtilities.Entities
 {
@@ -13,6 +9,8 @@ namespace CommonTestUtilities.Entities
         public static (User user, string password) Build()
         {
 
+            var passwordEncripter = PasswordEncripterBuilder.Build();
+
             var password = new Faker().Internet.Password();
 
             var user = new Faker<User>()
@@ -20,7 +18,7 @@ namespace CommonTestUtilities.Entities
                 .RuleFor(user => user.Name, (f) => f.Person.FirstName)
                 .RuleFor(user => user.Email, (f, user) => f.Internet.Email(user.Name))
                 .RuleFor(user => user.UserIdentifier, _ => Guid.NewGuid())
-                .RuleFor(user => user.Password, (f) => PasswordEncripter.Encrypt(password));
+                .RuleFor(user => user.Password, (f) => passwordEncripter.Encrypt(password));
 
             return (user, password);
         }
