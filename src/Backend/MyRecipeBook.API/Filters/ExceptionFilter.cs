@@ -36,12 +36,17 @@ namespace MyRecipeBook.API.Filters
                 contex.HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                 contex.Result = new UnauthorizedObjectResult(new ResponseErrorJson(contex.Exception.Message));
             }
+            else if (contex.Exception is NotFoundException)
+            {
+                contex.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                contex.Result = new NotFoundObjectResult(new ResponseErrorJson(contex.Exception.Message));
+            }
         }
 
         public static void ThrowUnknowException(ExceptionContext contex)
         {
             contex.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            contex.Result = new ObjectResult(new ResponseErrorJson(ResourceMenssagesException.UNKNOW_ERROR));
+            contex.Result = new ObjectResult(new ResponseErrorJson(ResourceMessagesException.UNKNOW_ERROR));
         }
     }
 

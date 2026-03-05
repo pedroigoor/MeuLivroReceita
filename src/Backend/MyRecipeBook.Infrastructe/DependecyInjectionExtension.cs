@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Domain.Repositories;
+using MyRecipeBook.Domain.Repositories.Recipe;
 using MyRecipeBook.Domain.Repositories.User;
 using MyRecipeBook.Domain.Security.Tokens;
 using MyRecipeBook.Domain.Security.Tokens.Cryptogaphy;
@@ -59,9 +60,15 @@ namespace MyRecipeBook.Infrastructe
         private static void AddDbRepository(IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IUserWriteOnlyRepository,UserRespository>();
-            services.AddScoped<IUserReadOnlyRepository, UserRespository>();
-            services.AddScoped<IUserUpdateOnlyRepository, UserRespository>();
+            services.AddScoped<IUserWriteOnlyRepository,UserRepository>();
+            services.AddScoped<IUserReadOnlyRepository, UserRepository>();
+            services.AddScoped<IUserUpdateOnlyRepository, UserRepository>();
+
+            //services.AddScoped<IUserDeleteOnlyRepository, UserRepository>();
+            services.AddScoped<IRecipeWriteOnlyRepository, RecipeRepository>();
+            services.AddScoped<IRecipeReadOnlyRepository, RecipeRepository>();
+            services.AddScoped<IRecipeUpdateOnlyRepository, RecipeRepository>();
+            //services.AddScoped<ITokenRepository, TokenRepository>();
 
 
         }

@@ -2,7 +2,7 @@
 {
     public class InvalidLoginException : MyRecipeBookException
     {
-            public InvalidLoginException() : base(ResourceMenssagesException.EMAIL_OR_PASSWORD_INVALID) { }         
+            public InvalidLoginException() : base(ResourceMessagesException.EMAIL_OR_PASSWORD_INVALID) { }         
         
 
     }

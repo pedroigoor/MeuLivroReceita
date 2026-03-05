@@ -43,7 +43,7 @@ namespace UseCases.User.Register
 
             exception.Errors.Count.ShouldBe(1);
             exception.Errors
-                .ShouldContain(ResourceMenssagesException.EMAIL_ALREADY_REGISTERED);
+                .ShouldContain(ResourceMessagesException.EMAIL_ALREADY_REGISTERED);
         }
         [Fact]
         public async Task Error_Name_Empty()
@@ -60,7 +60,7 @@ namespace UseCases.User.Register
 
             exception.Errors.Count.ShouldBe(1);
             exception.Errors
-                .ShouldContain(ResourceMenssagesException.NAME_EMPTY);
+                .ShouldContain(ResourceMessagesException.NAME_EMPTY);
         }
 
         private static RegisterUserUseCase CreateUseCase(string? email =null )

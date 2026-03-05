@@ -63,7 +63,7 @@ namespace WebApi.test.User.Register
                 .GetProperty("errors")
                 .EnumerateArray();
 
-            var expectedMessage = ResourceMenssagesException
+            var expectedMessage = ResourceMessagesException
                 .ResourceManager
                 .GetString("NAME_EMPTY", new CultureInfo(culture));
 

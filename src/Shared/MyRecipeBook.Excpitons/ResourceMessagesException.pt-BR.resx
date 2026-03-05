@@ -117,31 +117,70 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AT_LEAST_ONE_INGREDIENT" xml:space="preserve">
+    <value>Observe que pelo menos um ingrediente é necessário</value>
+  </data>
+  <data name="AT_LEAST_ONE_INSTRUCTION" xml:space="preserve">
+    <value>Por favor, certifique-se de que haja pelo menos uma instrução fornecida para a receita.</value>
+  </data>
+  <data name="COOKING_TIME_NOT_SUPPORTED" xml:space="preserve">
+    <value>O valor de tempo de cozimento fornecido não é suportado.</value>
+  </data>
+  <data name="DIFFICULTY_LEVEL_NOT_SUPPORTED" xml:space="preserve">
+    <value>O nível de dificuldade especificado para a receita não é suportado.</value>
+  </data>
+  <data name="DISH_TYPE_NOT_SUPPORTED" xml:space="preserve">
+    <value>O tipo de prato selecionado não é compatível.</value>
+  </data>
   <data name="EMAIL_ALREADY_REGISTERED" xml:space="preserve">
-    <value>Email already registered</value>
+    <value>Email ja registrado</value>
   </data>
   <data name="EMAIL_EMPTY" xml:space="preserve">
-    <value>The email cannot be empty</value>
+    <value>O email não pode esta vazio</value>
   </data>
   <data name="EMAIL_INVALID" xml:space="preserve">
-    <value>The email is invalid</value>
+    <value>O email  esta invalido</value>
   </data>
   <data name="EMAIL_OR_PASSWORD_INVALID" xml:space="preserve">
-    <value>Invalid email and/or password</value>
+    <value>Email e/ou senha invalidos</value>
+  </data>
+  <data name="INGREDIENT_EMPTY" xml:space="preserve">
+    <value>O campo "Ingrediente" está vazio. Por favor, forneça um valor válido.</value>
+  </data>
+  <data name="INSTRUCTION_EMPTY" xml:space="preserve">
+    <value>A instrução está em branco. Por favor, forneça uma instrução válida.</value>
   </data>
   <data name="NAME_EMPTY" xml:space="preserve">
-    <value>The name cannot be empty</value>
+    <value>O nome não pode esta vazio</value>
   </data>
   <data name="NO_TOKEN" xml:space="preserve">
-    <value>the token does not exist!</value>
+    <value>o token nao existe!</value>
+  </data>
+  <data name="PASSWORD_DIFFERENT_CURRENT_PASSWORD" xml:space="preserve">
+    <value>A senha inserida é diferente da senha atual.</value>
   </data>
   <data name="PASSWORD_EMPTY" xml:space="preserve">
-    <value>The password cannot be empty and must be 6 characters long</value>
+    <value>A senha não pode esta vazio e precisa ter 6 caracteres</value>
+  </data>
+  <data name="RECIPE_TITLE_EMPTY" xml:space="preserve">
+    <value>O título da receita está em branco. Por favor, forneça um título válido.</value>
   </data>
   <data name="UNKNOW_ERROR" xml:space="preserve">
-    <value>Unknown error</value>
+    <value>Erro desconhecido</value>
   </data>
   <data name="USER_WITHOUT_PERMISSION_ACCESS_RESOURCE" xml:space="preserve">
-    <value>You can't access this resource.</value>
+    <value>Você não tem permissão para acessar esse recurso.</value>
+  </data>
+  <data name="INSTRUCTION_EXCEEDS_LIMIT_CHARACTERS" xml:space="preserve">
+    <value>A instrução excede o limite máximo de 2000 caracteres.</value>
+  </data>
+  <data name="NON_NEGATIVE_INSTRUCTION_STEP" xml:space="preserve">
+    <value>Utilize um valor não negativo para a etapa de instrução.</value>
+  </data>
+  <data name="TWO_OR_MORE_INSTRUCTIONS_SAME_ORDER" xml:space="preserve">
+    <value>Ao adicionar instruções, certifique-se de que cada uma tenha um número de etapa exclusivo. Duas ou mais instruções não podem ter a mesma etapa.</value>
+  </data>
+  <data name="RECIPE_NOT_FOUND" xml:space="preserve">
+    <value>Receita não encontrata</value>
   </data>
 </root>

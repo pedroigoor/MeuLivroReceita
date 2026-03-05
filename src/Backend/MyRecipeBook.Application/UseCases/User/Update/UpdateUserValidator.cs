@@ -11,12 +11,12 @@ namespace MyRecipeBook.Application.UseCases.User.Update
     {
         public UpdateUserValidator()
         {
-            RuleFor(request => request.Name).NotEmpty().WithMessage(ResourceMenssagesException.NAME_EMPTY);
-            RuleFor(request => request.Email).NotEmpty().WithMessage(ResourceMenssagesException.EMAIL_EMPTY);
+            RuleFor(request => request.Name).NotEmpty().WithMessage(ResourceMessagesException.NAME_EMPTY);
+            RuleFor(request => request.Email).NotEmpty().WithMessage(ResourceMessagesException.EMAIL_EMPTY);
 
             When(request =>!string.IsNullOrWhiteSpace(request.Email), () =>
             {
-                RuleFor(request => request.Email).EmailAddress().WithMessage(ResourceMenssagesException.EMAIL_INVALID);
+                RuleFor(request => request.Email).EmailAddress().WithMessage(ResourceMessagesException.EMAIL_INVALID);
             });
         }
     }

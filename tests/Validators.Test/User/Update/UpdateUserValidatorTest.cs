@@ -36,7 +36,7 @@ namespace Validators.Test.User.Update
             result.IsValid.ShouldBeFalse();
             result.Errors.Count.ShouldBe(1);
             result.Errors.ShouldContain(e =>
-                e.ErrorMessage == ResourceMenssagesException.NAME_EMPTY);
+                e.ErrorMessage == ResourceMessagesException.NAME_EMPTY);
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace Validators.Test.User.Update
 
             result.Errors.Count.ShouldBe(1);
             result.Errors.ShouldContain(e =>
-                e.ErrorMessage == ResourceMenssagesException.EMAIL_EMPTY);
+                e.ErrorMessage == ResourceMessagesException.EMAIL_EMPTY);
         }
 
         [Fact]
@@ -68,7 +68,7 @@ namespace Validators.Test.User.Update
 
             result.Errors.Count.ShouldBe(1);
             result.Errors.ShouldContain(e =>
-                e.ErrorMessage == ResourceMenssagesException.EMAIL_INVALID);
+                e.ErrorMessage == ResourceMessagesException.EMAIL_INVALID);
         }
     }
 }

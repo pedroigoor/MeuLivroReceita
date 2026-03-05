@@ -51,7 +51,7 @@ namespace UseCases.Test.User.Update
 
             exception.Errors.Count.ShouldBe(1);
             exception.Errors
-                .ShouldContain(ResourceMenssagesException.NAME_EMPTY);
+                .ShouldContain(ResourceMessagesException.NAME_EMPTY);
 
 
             user.Name.ShouldNotBe(request.Name);
@@ -75,7 +75,7 @@ namespace UseCases.Test.User.Update
 
             exception.Errors.Count.ShouldBe(1);
             exception.Errors
-                .ShouldContain(ResourceMenssagesException.EMAIL_ALREADY_REGISTERED);
+                .ShouldContain(ResourceMessagesException.EMAIL_ALREADY_REGISTERED);
 
             user.Name.ShouldNotBe(request.Name);
             user.Email.ShouldNotBe(request.Email);

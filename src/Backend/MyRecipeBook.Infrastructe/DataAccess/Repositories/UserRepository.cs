@@ -8,10 +8,10 @@ using System.Text;
 
 namespace MyRecipeBook.Infrastructe.DataAccess.Repositories
 {
-    public class UserRespository : IUserWriteOnlyRepository , IUserReadOnlyRepository, IUserUpdateOnlyRepository
+    public class UserRepository : IUserWriteOnlyRepository , IUserReadOnlyRepository, IUserUpdateOnlyRepository
     {
         private readonly MyRecipeBookDbContext _context;
-        public UserRespository(MyRecipeBookDbContext context)
+        public UserRepository(MyRecipeBookDbContext context)
         {
             _context = context;
         }

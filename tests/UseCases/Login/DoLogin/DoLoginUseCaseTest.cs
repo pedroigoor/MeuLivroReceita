@@ -44,7 +44,7 @@ namespace UseCases.Test.Login.DoLogin
                 () => useCase.Execute(request)
             );
 
-            exception.Message.ShouldBe(ResourceMenssagesException.EMAIL_OR_PASSWORD_INVALID);
+            exception.Message.ShouldBe(ResourceMessagesException.EMAIL_OR_PASSWORD_INVALID);
 
         }
 

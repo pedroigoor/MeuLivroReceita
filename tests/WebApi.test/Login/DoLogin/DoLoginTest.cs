@@ -86,7 +86,7 @@ namespace WebApi.test.Login.DoLogin
                 .GetProperty("errors")
                 .EnumerateArray();
 
-            var expectedMessage = ResourceMenssagesException
+            var expectedMessage = ResourceMessagesException
                 .ResourceManager
                 .GetString("EMAIL_OR_PASSWORD_INVALID", new CultureInfo(culture));
 

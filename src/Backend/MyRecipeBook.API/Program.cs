@@ -1,6 +1,7 @@
 using Microsoft.OpenApi;
 using MyRecipeBook.API.Config;
 using MyRecipeBook.API.Converters;
+using MyRecipeBook.API.Filters;
 using MyRecipeBook.Application;
 using MyRecipeBook.Infrastructe;
 using MyRecipeBook.Infrastructe.Extensions;
@@ -12,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddInfrastructe(builder.Configuration);
-builder.Services.AddApplication();
+builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddApi();
 
 builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.Converters.Add(new StringConverter()));
@@ -23,6 +24,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen(options =>
 {
+    options.OperationFilter<IdsFilter>();
+
     options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
     {
         Description = @"JWT Authorization header using the Bearer scheme.
@@ -31,7 +34,9 @@ builder.Services.AddSwaggerGen(options =>
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
-        Scheme = "bearer"
+        Scheme = "bearer",
+
+
     });
 
     options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
