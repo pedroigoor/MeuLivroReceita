@@ -1,4 +1,5 @@
-﻿using MyRecipeBook.API.Filters;
+﻿using MyRecipeBook.API.BackgroundServices;
+using MyRecipeBook.API.Filters;
 using MyRecipeBook.API.Token;
 using MyRecipeBook.Domain.Security.Tokens;
 
@@ -10,6 +11,7 @@ namespace MyRecipeBook.API.Config
         {
             services.AddMvc(options => options.Filters.Add<ExceptionFilter>());
             services.AddScoped<ITokenProvider, HttpContextTokenValue>();
+            //services.AddHostedService<DeleteUserService>();
 
         }
     }

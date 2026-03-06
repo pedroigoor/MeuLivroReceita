@@ -25,9 +25,11 @@ namespace MyRecipeBook.Infrastructe.Services.Storage
             }
         }
 
-        public Task DeleteContainer(Guid userIdentifier)
+
+        public async Task DeleteContainer(Guid userIdentifier)
         {
-            throw new NotImplementedException();
+            var container = _blobServiceClient.GetBlobContainerClient(userIdentifier.ToString());
+            await container.DeleteIfExistsAsync();
         }
 
         public async Task<string> GetFileUrl(User user, string fileName)

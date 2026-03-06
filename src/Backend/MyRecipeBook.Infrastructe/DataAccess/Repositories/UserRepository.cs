@@ -8,7 +8,7 @@ using System.Text;
 
 namespace MyRecipeBook.Infrastructe.DataAccess.Repositories
 {
-    public class UserRepository : IUserWriteOnlyRepository , IUserReadOnlyRepository, IUserUpdateOnlyRepository
+    public class UserRepository : IUserWriteOnlyRepository, IUserReadOnlyRepository, IUserUpdateOnlyRepository, IUserDeleteOnlyRepository
     {
         private readonly MyRecipeBookDbContext _context;
         public UserRepository(MyRecipeBookDbContext context)
@@ -43,5 +43,29 @@ namespace MyRecipeBook.Infrastructe.DataAccess.Repositories
         }
 
         public void Update(User user) => _context .Users.Update(user);
+
+      
+
+        public async Task DeleteAccount(Guid userIdentifier)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(user => user.UserIdentifier == userIdentifier);
+            if (user is null)
+                return;
+
+            var recipes = _context.Recipes.Where(recipe => recipe.UserId == user.Id);
+
+            _context.Recipes.RemoveRange(recipes);
+
+            _context.Users.Remove(user);
+        }
+
+        public async Task<User?> GetByEmail(string email)
+        {
+            return await _context
+                .Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(user => user.Active && user.Email.Equals(email));
+        }
+
     }
 }
