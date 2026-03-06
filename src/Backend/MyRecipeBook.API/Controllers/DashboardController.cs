@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyRecipeBook.API.Attributes;
+using MyRecipeBook.Application.UseCases.Dashboard;
 using MyRecipeBook.Communication.Resopnses;
 
 namespace MyRecipeBook.API.Controllers

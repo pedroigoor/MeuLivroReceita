@@ -6,8 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.app" />
+	</ItemGroup>
+	
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="File.TypeChecker" Version="4.3.0" />
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="Sqids" Version="3.2.1" />
   </ItemGroup>

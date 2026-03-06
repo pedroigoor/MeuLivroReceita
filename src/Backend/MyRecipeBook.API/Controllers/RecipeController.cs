@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MyRecipeBook.API.Attributes;
 using MyRecipeBook.API.Binders;
-using MyRecipeBook.Application.UseCases.Login.DoLogin;
 using MyRecipeBook.Application.UseCases.Recipe.Delete;
 using MyRecipeBook.Application.UseCases.Recipe.Filter;
+using MyRecipeBook.Application.UseCases.Recipe.Generate;
 using MyRecipeBook.Application.UseCases.Recipe.GetById;
+using MyRecipeBook.Application.UseCases.Recipe.Image;
 using MyRecipeBook.Application.UseCases.Recipe.Register;
 using MyRecipeBook.Application.UseCases.Recipe.Update;
 using MyRecipeBook.Communication.Request;
@@ -78,6 +78,34 @@ namespace MyRecipeBook.API.Controllers
 
             return NoContent();
         }
+
+
+        [HttpPost("generate")]
+        [ProducesResponseType(typeof(ResponseGeneratedRecipeJson), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Generate(
+            [FromServices] IGenerateRecipeUseCase useCase,
+            [FromBody] RequestGenerateRecipeJson request)
+        {
+            var response = await useCase.Execute(request);
+
+            return Ok(response);
+        }
+
+        [HttpPut]
+        [Route("image/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateImage(
+        [FromServices] IAddUpdateImageCoverUseCase useCase,
+        [FromRoute][ModelBinder(typeof(MyRecipeBookIdBinder))] long id,
+        IFormFile file)
+            {
+                await useCase.Execute(id, file);
+
+                return NoContent();
+            }
 
     }
 }
