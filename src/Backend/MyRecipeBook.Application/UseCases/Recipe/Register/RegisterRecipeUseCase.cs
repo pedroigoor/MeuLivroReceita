@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using MyRecipeBook.Application.Extensions;
 using MyRecipeBook.Communication.Request;
 using MyRecipeBook.Communication.Resopnses;
 using MyRecipeBook.Domain.Repositories;
 using MyRecipeBook.Domain.Repositories.Recipe;
 using MyRecipeBook.Domain.Services.LoggedUser;
+using MyRecipeBook.Domain.Services.Storage;
 using MyRecipeBook.Excpitons;
 using MyRecipeBook.Excpitons.ExceptionsBase;
 
@@ -15,24 +17,24 @@ namespace MyRecipeBook.Application.UseCases.Recipe.Register
         private readonly ILoggedUser _loggedUser;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        //private readonly IBlobStorageService _blobStorageService;
+        private readonly IBlobStorageService _blobStorageService;
 
         public RegisterRecipeUseCase(
             ILoggedUser loggedUser,
             IRecipeWriteOnlyRepository repository,
             IUnitOfWork unitOfWork,
-            IMapper mapper
-            //IBlobStorageService blobStorageService
+            IMapper mapper,
+            IBlobStorageService blobStorageService
             )
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _loggedUser = loggedUser;
-            //_blobStorageService = blobStorageService;
+            _blobStorageService = blobStorageService;
         }
 
-        public async Task<ResponseRegiteredRecipeJson> Execute(RequestRecipeJson request)
+        public async Task<ResponseRegiteredRecipeJson> Execute(RequestRegisterRecipeFormData request)
         {
             Validate(request);
 
@@ -47,21 +49,21 @@ namespace MyRecipeBook.Application.UseCases.Recipe.Register
 
             recipe.Instructions = _mapper.Map<IList<Domain.Entities.Instruction>>(instructions);
 
-            //if (request.Image is not null)
-            //{
-            //    var fileStream = request.Image.OpenReadStream();
+            if (request.Image is not null)
+            {
+                var fileStream = request.Image.OpenReadStream();
 
-            //    (var isValidImage, var extension) = fileStream.ValidateAndGetImageExtension();
+                (var isValidImage, var extension) = fileStream.ValidateAndGetImageExtension();
 
-            //    if (isValidImage.IsFalse())
-            //    {
-            //        throw new ErrorOnValidationException([ResourceMessagesException.ONLY_IMAGES_ACCEPTED]);
-            //    }
+                if (!isValidImage)
+                {
+                    throw new ErrorOnValidationException([ResourceMessagesException.ONLY_IMAGES_ACCEPTED]);
+                }
 
-            //    recipe.ImageIdentifier = $"{Guid.NewGuid()}{extension}";
+                recipe.ImageIdentifier = $"{Guid.NewGuid()}{extension}";
 
-            //    await _blobStorageService.Upload(loggedUser, fileStream, recipe.ImageIdentifier);
-            //}
+                await _blobStorageService.Upload(loggedUser, fileStream, recipe.ImageIdentifier);
+            }
 
             await _repository.Add(recipe);
 

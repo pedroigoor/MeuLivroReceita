@@ -1,4 +1,5 @@
-﻿using FirebirdSql.Data.Services;
+﻿using Azure.Storage.Blobs;
+using FirebirdSql.Data.Services;
 using FluentMigrator.Runner;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +11,7 @@ using MyRecipeBook.Domain.Security.Tokens;
 using MyRecipeBook.Domain.Security.Tokens.Cryptogaphy;
 using MyRecipeBook.Domain.Services.LoggedUser;
 using MyRecipeBook.Domain.Services.OpenAI;
+using MyRecipeBook.Domain.Services.Storage;
 using MyRecipeBook.Domain.ValueObjects;
 using MyRecipeBook.Infrastructe.DataAccess;
 using MyRecipeBook.Infrastructe.DataAccess.Repositories;
@@ -19,6 +21,7 @@ using MyRecipeBook.Infrastructe.Security.Tokens.Access.Generator;
 using MyRecipeBook.Infrastructe.Security.Tokens.Access.Validator;
 using MyRecipeBook.Infrastructe.Services;
 using MyRecipeBook.Infrastructe.Services.OpenAi;
+using MyRecipeBook.Infrastructe.Services.Storage;
 using OpenAI.Chat;
 
 namespace MyRecipeBook.Infrastructe
@@ -32,14 +35,15 @@ namespace MyRecipeBook.Infrastructe
             AddToken(services, configuration);
             AddPasswordEncrypt(services);
             AddChatGptService(services, configuration);
+            AddAzureStorage(services, configuration);
             if (configuration.IsUnitTestEnviroment())
             {
-              return;
+                return;
             }
 
             AddDbContext(services, configuration);
             AddFluentMigrator(services, configuration);
-            
+
         }
 
         private static void AddDbContext(IServiceCollection services, IConfiguration configuration)
@@ -53,19 +57,19 @@ namespace MyRecipeBook.Infrastructe
         private static void AddFluentMigrator(IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.ConnectionString();
-                services.AddFluentMigratorCore()
-                    .ConfigureRunner(rb => rb
-                        .AddSqlServer()
-                        .WithGlobalConnectionString(connectionString)
-                        .ScanIn(typeof(DependecyInjectionExtension).Assembly).For.All())
-                    .AddLogging(lb => lb.AddFluentMigratorConsole());
+            services.AddFluentMigratorCore()
+                .ConfigureRunner(rb => rb
+                    .AddSqlServer()
+                    .WithGlobalConnectionString(connectionString)
+                    .ScanIn(typeof(DependecyInjectionExtension).Assembly).For.All())
+                .AddLogging(lb => lb.AddFluentMigratorConsole());
 
 
         }
         private static void AddDbRepository(IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IUserWriteOnlyRepository,UserRepository>();
+            services.AddScoped<IUserWriteOnlyRepository, UserRepository>();
             services.AddScoped<IUserReadOnlyRepository, UserRepository>();
             services.AddScoped<IUserUpdateOnlyRepository, UserRepository>();
 
@@ -101,6 +105,13 @@ namespace MyRecipeBook.Infrastructe
             var apiKey = configuration.GetValue<string>("Settings:OpenAI:Apikey");
 
             services.AddScoped(c => new ChatClient(MyRecipeBookRuleConstants.CHAT_MODEL, apiKey));
+        }
+
+        private static void AddAzureStorage(this IServiceCollection services, IConfiguration configuration)
+        {
+            var connectionString = configuration.GetValue<string>("Settings:BlobStorage:Azure");
+            services.AddScoped<IBlobStorageService>( c => new AzureStorageService ( new BlobServiceClient(connectionString)));
+
         }
     }
 }

@@ -20,7 +20,7 @@ namespace MyRecipeBook.API.Controllers
         [ProducesResponseType(typeof(ResponseRegisteredUserJson), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register([FromServices] IRegisterRecipeUseCase useCase,
-                                               [FromBody] RequestRecipeJson request)
+                                                    [FromForm] RequestRegisterRecipeFormData request)
         {
             var response = await useCase.Execute(request);
             return Created(string.Empty,response);
@@ -100,7 +100,7 @@ namespace MyRecipeBook.API.Controllers
         public async Task<IActionResult> UpdateImage(
         [FromServices] IAddUpdateImageCoverUseCase useCase,
         [FromRoute][ModelBinder(typeof(MyRecipeBookIdBinder))] long id,
-        IFormFile file)
+         IFormFile file)
             {
                 await useCase.Execute(id, file);
 

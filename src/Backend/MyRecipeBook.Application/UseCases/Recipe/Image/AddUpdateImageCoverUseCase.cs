@@ -1,14 +1,11 @@
-﻿using FileTypeChecker.Extensions;
-using FileTypeChecker.Types;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+using MyRecipeBook.Application.Extensions;
 using MyRecipeBook.Domain.Repositories;
 using MyRecipeBook.Domain.Repositories.Recipe;
 using MyRecipeBook.Domain.Services.LoggedUser;
+using MyRecipeBook.Domain.Services.Storage;
 using MyRecipeBook.Excpitons;
 using MyRecipeBook.Excpitons.ExceptionsBase;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MyRecipeBook.Application.UseCases.Recipe.Image
 {
@@ -17,20 +14,19 @@ namespace MyRecipeBook.Application.UseCases.Recipe.Image
         private readonly ILoggedUser _loggedUser;
         private readonly IRecipeUpdateOnlyRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
-        //private readonly IBlobStorageService _blobStorageService;
+        private readonly IBlobStorageService _blobStorageService;
 
         public AddUpdateImageCoverUseCase(
             ILoggedUser loggedUser,
             IRecipeUpdateOnlyRepository repository,
-            IUnitOfWork unitOfWork
-            //,
-            //IBlobStorageService blobStorageService
+            IUnitOfWork unitOfWork,
+            IBlobStorageService blobStorageService
             )
         {
             _repository = repository;
             _loggedUser = loggedUser;
             _unitOfWork = unitOfWork;
-            //_blobStorageService = blobStorageService;
+            _blobStorageService = blobStorageService;
         }
 
         public async Task Execute(long recipeId, IFormFile file)
@@ -44,25 +40,21 @@ namespace MyRecipeBook.Application.UseCases.Recipe.Image
 
             var fileStream = file.OpenReadStream();
 
-            if ( !fileStream.Is<PortableNetworkGraphic>() && !fileStream.Is<JointPhotographicExpertsGroup>()) {
+            (var isValidImage, var extension) = fileStream.ValidateAndGetImageExtension();
+
+            if (!isValidImage)
+            {
                 throw new ErrorOnValidationException([ResourceMessagesException.ONLY_IMAGES_ACCEPTED]);
             }
 
-            //(var isValidImage, var extension) = fileStream.ValidateAndGetImageExtension();
+            if (string.IsNullOrEmpty(recipe.ImageIdentifier))
+            {
+                recipe.ImageIdentifier = $"{Guid.NewGuid()}{extension}";
 
-            //if (isValidImage.IsFalse())
-            //{
-            //    throw new ErrorOnValidationException([ResourceMessagesException.ONLY_IMAGES_ACCEPTED]);
-            //}
+                _repository.Update(recipe);
 
-            //if (string.IsNullOrEmpty(recipe.ImageIdentifier))
-            //{
-            //    recipe.ImageIdentifier = $"{Guid.NewGuid()}{extension}";
-
-            //    _repository.Update(recipe);
-
-            //    await _unitOfWork.Commit();
-            //}
+                await _unitOfWork.Commit();
+            } 
 
             //await _blobStorageService.Upload(loggedUser, fileStream, recipe.ImageIdentifier);
         }

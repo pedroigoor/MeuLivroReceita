@@ -2,6 +2,7 @@
 using MyRecipeBook.Communication.Resopnses;
 using MyRecipeBook.Domain.Repositories.Recipe;
 using MyRecipeBook.Domain.Services.LoggedUser;
+using MyRecipeBook.Domain.Services.Storage;
 using MyRecipeBook.Excpitons;
 using MyRecipeBook.Excpitons.ExceptionsBase;
 using System;
@@ -15,20 +16,19 @@ namespace MyRecipeBook.Application.UseCases.Recipe.GetById
         private readonly IMapper _mapper;
         private readonly ILoggedUser _loggedUser;
         private readonly IRecipeReadOnlyRepository _repository;
-        //private readonly IBlobStorageService _blobStorageService;
+        private readonly IBlobStorageService _blobStorageService;
 
         public GetRecipeByIdUseCase(
             IMapper mapper,
             ILoggedUser loggedUser,
-            IRecipeReadOnlyRepository repository
-            //,
-            //IBlobStorageService blobStorageService
+            IRecipeReadOnlyRepository repository,
+            IBlobStorageService blobStorageService
             )
         {
             _repository = repository;
             _mapper = mapper;
             _loggedUser = loggedUser;
-            //_blobStorageService = blobStorageService;
+            _blobStorageService = blobStorageService;
         }
 
         public async Task<ResponseRecipeJson> Execute(long recipeId)
@@ -42,12 +42,12 @@ namespace MyRecipeBook.Application.UseCases.Recipe.GetById
 
             var response = _mapper.Map<ResponseRecipeJson>(recipe);
 
-            //if (recipe.ImageIdentifier.NotEmpty())
-            //{
-            //    var url = await _blobStorageService.GetFileUrl(loggedUser, recipe.ImageIdentifier);
+            if (!string.IsNullOrEmpty(recipe.ImageIdentifier))
+            {
+                var url = await _blobStorageService.GetFileUrl(loggedUser, recipe.ImageIdentifier);
 
-            //    response.ImageUrl = url;
-            //}
+                response.ImageUrl = url;
+            }
 
             return response;
         }
