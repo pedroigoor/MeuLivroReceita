@@ -1,15 +1,15 @@
 ﻿using Azure.Messaging.ServiceBus;
 using Azure.Storage.Blobs;
-using FirebirdSql.Data.Services;
 using FluentMigrator.Runner;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyRecipeBook.Domain.Repositories;
 using MyRecipeBook.Domain.Repositories.Recipe;
+using MyRecipeBook.Domain.Repositories.Token;
 using MyRecipeBook.Domain.Repositories.User;
+using MyRecipeBook.Domain.Security.Cryptogaphy;
 using MyRecipeBook.Domain.Security.Tokens;
-using MyRecipeBook.Domain.Security.Tokens.Cryptogaphy;
 using MyRecipeBook.Domain.Services.LoggedUser;
 using MyRecipeBook.Domain.Services.OpenAI;
 using MyRecipeBook.Domain.Services.ServiceBus;
@@ -21,6 +21,7 @@ using MyRecipeBook.Infrastructe.Extensions;
 using MyRecipeBook.Infrastructe.Security.Cryptography;
 using MyRecipeBook.Infrastructe.Security.Tokens.Access.Generator;
 using MyRecipeBook.Infrastructe.Security.Tokens.Access.Validator;
+using MyRecipeBook.Infrastructe.Security.Tokens.Refresh;
 using MyRecipeBook.Infrastructe.Services;
 using MyRecipeBook.Infrastructe.Services.OpenAi;
 using MyRecipeBook.Infrastructe.Services.ServiceBus;
@@ -81,7 +82,7 @@ namespace MyRecipeBook.Infrastructe
             services.AddScoped<IRecipeWriteOnlyRepository, RecipeRepository>();
             services.AddScoped<IRecipeReadOnlyRepository, RecipeRepository>();
             services.AddScoped<IRecipeUpdateOnlyRepository, RecipeRepository>();
-            //services.AddScoped<ITokenRepository, TokenRepository>();
+            services.AddScoped<ITokenRepository, TokenRepository>();
 
 
 
@@ -95,6 +96,8 @@ namespace MyRecipeBook.Infrastructe
 
             services.AddScoped<IAccessTokenGenerator>(option => new JwtTokenGenerator(expirationTimeMinutes, signingKey!));
             services.AddScoped<IAccessTokenValidator>(option => new JwtTokenValidator(signingKey!));
+
+            services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
         }
 
         private static void AddLoggedUser(IServiceCollection services) => services.AddScoped<ILoggedUser, LoggedUser>();
@@ -102,7 +105,7 @@ namespace MyRecipeBook.Infrastructe
 
         private static void AddPasswordEncrypt(this IServiceCollection services)
         {
-            services.AddScoped<IPasswordEncripter>(options => new Sha512Encripter());
+            services.AddScoped<IPasswordEncripter, BCryptNet>();
         }
         private static void AddChatGptService(this IServiceCollection services, IConfiguration configuration)
         {

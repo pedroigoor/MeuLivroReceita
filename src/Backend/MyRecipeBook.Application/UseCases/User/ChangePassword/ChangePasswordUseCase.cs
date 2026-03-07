@@ -1,7 +1,7 @@
 ﻿using MyRecipeBook.Communication.Request;
 using MyRecipeBook.Domain.Repositories;
 using MyRecipeBook.Domain.Repositories.User;
-using MyRecipeBook.Domain.Security.Tokens.Cryptogaphy;
+using MyRecipeBook.Domain.Security.Cryptogaphy;
 using MyRecipeBook.Domain.Services.LoggedUser;
 using MyRecipeBook.Excpitons;
 using MyRecipeBook.Excpitons.ExceptionsBase;
@@ -45,9 +45,8 @@ namespace MyRecipeBook.Application.UseCases.User.ChangePassword
         private void Validate(RequestChangePasswordJson request, Domain.Entities.User loggedUser)
         {
             var result = new ChangePasswordValidator().Validate(request);
-            var currentPasswordEncripted = _passwordEncripter.Encrypt(request.Password);
 
-            if (!currentPasswordEncripted.Equals(loggedUser.Password))
+            if (!_passwordEncripter.IsValid(request.Password,loggedUser.Password))
                 result.Errors.Add(new FluentValidation.Results.ValidationFailure(string.Empty, ResourceMessagesException.PASSWORD_DIFFERENT_CURRENT_PASSWORD));
 
             if (!result.IsValid)

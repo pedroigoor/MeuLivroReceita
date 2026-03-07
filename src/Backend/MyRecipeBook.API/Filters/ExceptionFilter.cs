@@ -12,43 +12,23 @@ namespace MyRecipeBook.API.Filters
     {
         public void OnException(ExceptionContext context)
         {
-            if (context.Exception is MyRecipeBookException)
-            {
-                HandleProjectException(context);
-            }
-            else {
+            if (context.Exception is MyRecipeBookException myRecipeBookException)
+                HandleProjectException(myRecipeBookException, context);
+            else
                 ThrowUnknowException(context);
-            }
         }
 
-        public static void HandleProjectException(ExceptionContext contex)
+        private static void HandleProjectException(MyRecipeBookException myRecipeBookException, ExceptionContext context)
         {
-            if(contex.Exception is ErrorOnValidationException)
-            {
-                var excepiton = contex.Exception as ErrorOnValidationException;
-
-                contex.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                contex.Result = new BadRequestObjectResult ( new ResponseErrorJson(excepiton!.Errors));
-            }
-            else if (contex.Exception is InvalidLoginException)
-            { 
-
-                contex.HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                contex.Result = new UnauthorizedObjectResult(new ResponseErrorJson(contex.Exception.Message));
-            }
-            else if (contex.Exception is NotFoundException)
-            {
-                contex.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                contex.Result = new NotFoundObjectResult(new ResponseErrorJson(contex.Exception.Message));
-            }
+            context.HttpContext.Response.StatusCode = (int)myRecipeBookException.GetStatusCode();
+            context.Result = new ObjectResult(new ResponseErrorJson(myRecipeBookException.GetErrorMessages()));
         }
 
-        public static void ThrowUnknowException(ExceptionContext contex)
+        private static void ThrowUnknowException(ExceptionContext context)
         {
-            contex.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            contex.Result = new ObjectResult(new ResponseErrorJson(ResourceMessagesException.UNKNOW_ERROR));
+            context.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            context.Result = new ObjectResult(new ResponseErrorJson(ResourceMessagesException.UNKNOW_ERROR));
         }
     }
 
-   
 }

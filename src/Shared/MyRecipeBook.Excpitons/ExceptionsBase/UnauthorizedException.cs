@@ -1,10 +1,13 @@
-﻿using System.Net;
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Text;
 
 namespace MyRecipeBook.Excpitons.ExceptionsBase
 {
-    public class InvalidLoginException : MyRecipeBookException
+    public class UnauthorizedException : MyRecipeBookException
     {
-        public InvalidLoginException() : base(ResourceMessagesException.EMAIL_OR_PASSWORD_INVALID)
+        public UnauthorizedException(string message) : base(message)
         {
         }
 

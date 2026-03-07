@@ -32,7 +32,7 @@ namespace MyRecipeBook.API.Filters
                 var exist = await _repository.ExistActiveUserWithIdentifier(userIdentifier);
                 if (!exist)
                 {
-                    throw new MyRecipeBookException(ResourceMessagesException.USER_WITHOUT_PERMISSION_ACCESS_RESOURCE);
+                    throw new UnauthorizedException(ResourceMessagesException.USER_WITHOUT_PERMISSION_ACCESS_RESOURCE);
                 }
 
                 // poderia fazer mais  validações do token lançando novas exceções para tratar cada caso, como token inválido, token mal formado, amdmin etc.
@@ -60,7 +60,7 @@ namespace MyRecipeBook.API.Filters
 
             if (string.IsNullOrWhiteSpace(auth))
             {
-                throw new MyRecipeBookException(ResourceMessagesException.NO_TOKEN);
+                throw new UnauthorizedException(ResourceMessagesException.NO_TOKEN);
             }
             return auth["Bearer ".Length..].Trim();
         }

@@ -8,6 +8,7 @@ namespace MyRecipeBook.Infrastructe.DataAccess
         public DbSet<User> Users { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
 
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         public MyRecipeBookDbContext(DbContextOptions options) : base(options)
         {

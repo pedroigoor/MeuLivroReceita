@@ -1,4 +1,4 @@
-﻿using MyRecipeBook.Domain.Security.Tokens.Cryptogaphy;
+﻿using MyRecipeBook.Domain.Security.Cryptogaphy;
 using MyRecipeBook.Infrastructe.Security.Cryptography;
 
 namespace CommonTestUtilities.Cryptography

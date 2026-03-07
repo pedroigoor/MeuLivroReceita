@@ -151,6 +151,15 @@ namespace MyRecipeBook.Excpitons {
         }
         
         /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Your session has expired. Please log in again to continue.
+        /// </summary>
+        public static string EXPIRED_SESSION {
+            get {
+                return ResourceManager.GetString("EXPIRED_SESSION", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a The ingredient is left empty, please provide a valid value.
         /// </summary>
         public static string INGREDIENT_EMPTY {
@@ -192,6 +201,15 @@ namespace MyRecipeBook.Excpitons {
         public static string INVALID_NUMBER_INGREDIENTS {
             get {
                 return ResourceManager.GetString("INVALID_NUMBER_INGREDIENTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a We couldn&apos;t find a valid session. Please log in to access this feature.
+        /// </summary>
+        public static string INVALID_SESSION {
+            get {
+                return ResourceManager.GetString("INVALID_SESSION", resourceCulture);
             }
         }
         

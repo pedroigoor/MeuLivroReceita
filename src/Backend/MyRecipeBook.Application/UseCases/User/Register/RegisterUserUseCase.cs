@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using MyRecipeBook.Communication.Request;
 using MyRecipeBook.Communication.Resopnses;
+using MyRecipeBook.Domain.Entities;
 using MyRecipeBook.Domain.Repositories;
+using MyRecipeBook.Domain.Repositories.Token;
 using MyRecipeBook.Domain.Repositories.User;
+using MyRecipeBook.Domain.Security.Cryptogaphy;
 using MyRecipeBook.Domain.Security.Tokens;
-using MyRecipeBook.Domain.Security.Tokens.Cryptogaphy;
 using MyRecipeBook.Excpitons;
 using MyRecipeBook.Excpitons.ExceptionsBase;
 
@@ -12,66 +14,89 @@ namespace MyRecipeBook.Application.UseCases.User.Register
 {
     public class RegisterUserUseCase : IRegisterUserUseCase
     {
-        private readonly IUserWriteOnlyRepository _userWriteOnlyRepository;
-        private readonly IUserReadOnlyRepository _userReadOnlyRepository;
-        private readonly IMapper _mapper;
+        private readonly IUserWriteOnlyRepository _writeOnlyRepository;
+        private readonly IUserReadOnlyRepository _readOnlyRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IPasswordEncripter _passwordEncripter;
+        private readonly IMapper _mapper;
         private readonly IAccessTokenGenerator _accessTokenGenerator;
+        private readonly IPasswordEncripter _passwordEncripter;
+        private readonly ITokenRepository _tokenRepository;
+        private readonly IRefreshTokenGenerator _refreshTokenGenerator;
 
-        public RegisterUserUseCase(IUserWriteOnlyRepository userWriteOnlyRepository, 
-                                   IUserReadOnlyRepository userReadOnlyRepository,
-                                   IMapper mapper,
-                                   IUnitOfWork unitOfWork,
-                                   IAccessTokenGenerator accessTokenGenerator,
-                                   IPasswordEncripter passwordEncripter)
+        public RegisterUserUseCase(
+            IUserWriteOnlyRepository writeOnlyRepository,
+            IUserReadOnlyRepository readOnlyRepository,
+            IUnitOfWork unitOfWork,
+            IPasswordEncripter passwordEncripter,
+            IAccessTokenGenerator accessTokenGenerator,
+            IMapper mapper,
+            ITokenRepository tokenRepository,
+            IRefreshTokenGenerator refreshTokenGenerator)
         {
-            _userWriteOnlyRepository = userWriteOnlyRepository;
-            _userReadOnlyRepository = userReadOnlyRepository;
+            _writeOnlyRepository = writeOnlyRepository;
+            _readOnlyRepository = readOnlyRepository;
             _mapper = mapper;
+            _passwordEncripter = passwordEncripter;
             _unitOfWork = unitOfWork;
-           _accessTokenGenerator = accessTokenGenerator;
-           _passwordEncripter = passwordEncripter;
-
+            _accessTokenGenerator = accessTokenGenerator;
+            _refreshTokenGenerator = refreshTokenGenerator;
+            _tokenRepository = tokenRepository;
         }
+
         public async Task<ResponseRegisteredUserJson> Execute(RequestRegisterUserJson request)
-        {   
-           await ValidateRequest(request);
-            
+        {
+            await Validate(request);
 
-           var user = _mapper.Map<Domain.Entities.User>(request);
-           user.Password = _passwordEncripter.Encrypt(request.Password);
-           user.UserIdentifier = Guid.NewGuid();
+            var user = _mapper.Map<Domain.Entities.User>(request);
+            user.Password = _passwordEncripter.Encrypt(request.Password);
 
-           await _userWriteOnlyRepository.Add(user);
-           await _unitOfWork.Commit();
-           return  new ResponseRegisteredUserJson { 
-               Name = user.Name,
-               Tokens = new ResponseTokensJson
-               {
-                   AccessToken = _accessTokenGenerator.GenerateToken(user.UserIdentifier)
-               }
-           };
+            await _writeOnlyRepository.Add(user);
+
+            await _unitOfWork.Commit();
+
+            var refreshToken = await CreateAndSaveRefreshToken(user);
+
+            return new ResponseRegisteredUserJson
+            {
+                Name = user.Name,
+                Tokens = new ResponseTokensJson
+                {
+                    AccessToken = _accessTokenGenerator.GenerateToken(user.UserIdentifier),
+                    RefreshToken = refreshToken
+                }
+            };
         }
 
+        private async Task<string> CreateAndSaveRefreshToken(Domain.Entities.User user)
+        {
+            var refreshToken = _refreshTokenGenerator.Generate();
 
-        private async Task ValidateRequest(RequestRegisterUserJson request)
+            await _tokenRepository.SaveNewRefreshToken(new RefreshToken
+            {
+                Value = refreshToken,
+                UserId = user.Id
+            });
+
+            await _unitOfWork.Commit();
+
+            return refreshToken;
+        }
+
+        private async Task Validate(RequestRegisterUserJson request)
         {
             var validator = new RegisterUserValidador();
 
-            var result = validator.Validate(request);
+            var result = await validator.ValidateAsync(request);
 
-            var emailExist = await _userReadOnlyRepository.ExistActiveUserWithEmail(request.Email);
+            var emailExist = await _readOnlyRepository.ExistActiveUserWithEmail(request.Email);
+            if (emailExist)
+                result.Errors.Add(new FluentValidation.Results.ValidationFailure(string.Empty, ResourceMessagesException.EMAIL_ALREADY_REGISTERED));
 
-            if (emailExist) {
-                result.Errors.Add(new FluentValidation.Results.ValidationFailure(string.Empty, ResourceMessagesException.EMAIL_ALREADY_REGISTERED)); 
-            }
-
-            if (!result.IsValid )
+            if (!result.IsValid)
             {
-                var errors = result.Errors.Select(e => e.ErrorMessage).ToList();
+                var errorMessages = result.Errors.Select(e => e.ErrorMessage).ToList();
 
-                throw new ErrorOnValidationException(errors);
+                throw new ErrorOnValidationException(errorMessages);
             }
         }
     }

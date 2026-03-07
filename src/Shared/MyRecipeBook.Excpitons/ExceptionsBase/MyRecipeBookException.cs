@@ -1,9 +1,13 @@
-﻿namespace MyRecipeBook.Excpitons.ExceptionsBase
+﻿using System.Net;
+
+namespace MyRecipeBook.Excpitons.ExceptionsBase
 {
-    public class MyRecipeBookException : SystemException
+    public abstract class MyRecipeBookException : SystemException
     {
         public MyRecipeBookException(string message) : base(message)
         {
         }
+        public abstract IList<string> GetErrorMessages();
+        public abstract HttpStatusCode GetStatusCode();
     }
 }
